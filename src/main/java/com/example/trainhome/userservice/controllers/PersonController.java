@@ -17,8 +17,7 @@ import com.example.trainhome.userservice.dto.PersonDTO;
 public class PersonController {
     private final PersonService personService;
     private final PersonRepository personRepository;
-
-
+    
     @Autowired
     public PersonController(PersonService personService, PersonRepository personRepository) {
         this.personService = personService;
