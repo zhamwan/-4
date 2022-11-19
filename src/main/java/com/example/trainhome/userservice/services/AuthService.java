@@ -3,12 +3,17 @@ package com.example.trainhome.userservice.services;
 import com.example.trainhome.userservice.dto.RegisterRequestDTO;
 import com.example.trainhome.userservice.dto.SportPriceDTO;
 import com.example.trainhome.userservice.entities.Person;
-import com.example.trainhome.userservice.repositories.RoleRepository;
+import com.example.trainhome.userservice.entities.Session;
+import com.example.trainhome.userservice.entities.SportSphereCoachPrice;
+import com.example.trainhome.userservice.entities.compositeKeys.SportSphereCoachPriceId;
+import com.example.trainhome.userservice.repositories.*;
+import com.example.trainhome.userservice.tokens.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Service
@@ -19,6 +24,18 @@ public class AuthService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private SessionRepository sessionRepository;
+
+    @Autowired
+    private CoachRepository coachRepository;
+
+    @Autowired
+    private SportSphereCoachPriceRepository sportSphereCoachPriceRepository;
+
+    @Autowired
+    private SportSphereRepository sportSphereRepository;
 
     public Person addNewPerson(RegisterRequestDTO requestDTO, String role) {
         Person newPerson = new Person();
@@ -33,8 +50,14 @@ public class AuthService {
         return newPerson;
     }
 
-    public void fillCoach(RegisterRequestDTO requestDTO) {
-
+    public void fillCoach(RegisterRequestDTO requestDTO, Long personId) {
+        coachRepository.fillCoach(personId, requestDTO.getInfo(), requestDTO.getAchievements());
+        for (SportPriceDTO dto : requestDTO.getListPrices()) {
+            sportSphereCoachPriceRepository.save(new SportSphereCoachPrice(
+                    new SportSphereCoachPriceId(coachRepository.getByPersonId(personId), sportSphereRepository.getByName(dto.getSportName())),
+                    dto.getPrice()
+            ));
+        }
     }
 
     public Person findByEmail(String email) {
@@ -53,5 +76,20 @@ public class AuthService {
             if (dto.getPrice() <= 0) return null;
         }
         return requestDTO;
+    }
+
+    public String createSession(Person person) {
+        String token = TokenUtils.generate(person);
+        Session session = new Session(person, token, java.util.Date.from(Instant.now()), false);
+        sessionRepository.save(session);
+        return token;
+    }
+
+    public void closeSession(Session session) {
+        sessionRepository.setExpirationById(session.getId());
+    }
+
+    public void closeAllPersonSessions(Session session) {
+        sessionRepository.setExpirationByPerson(session.getPerson().getId());
     }
 }
