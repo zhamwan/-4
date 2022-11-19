@@ -1,5 +1,6 @@
 package com.example.trainhome.userservice.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,4 +28,11 @@ public class Session {
 
     @Column(name = "expired", nullable = false)
     private boolean expired;
+
+    public Session(Person person, String token, Date createdAt, boolean expired) {
+        this.person = person;
+        this.token = token;
+        this.createdAt = createdAt;
+        this.expired = expired;
+    }
 }

@@ -1,7 +1,7 @@
 package com.example.trainhome.userservice.services;
 
-import com.example.trainhome.configuration.RoleConfig;
-import com.example.trainhome.userservice.dto.PersonDTO;
+import com.example.trainhome.userservice.dto.RegisterRequestDTO;
+import com.example.trainhome.userservice.dto.SportPriceDTO;
 import com.example.trainhome.userservice.entities.Person;
 import com.example.trainhome.userservice.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +20,38 @@ public class AuthService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public Person addNewPerson(PersonDTO personDTO, String role) {
+    public Person addNewPerson(RegisterRequestDTO requestDTO, String role) {
         Person newPerson = new Person();
-        newPerson.setPassword(passwordEncoder.encode(personDTO.getPassword()));
-        newPerson.setName(personDTO.getName());
-        newPerson.setImage(personDTO.getImage());
-        newPerson.setPhoneNumber(personDTO.getPhoneNumber());
-        newPerson.setEmail(personDTO.getEmail());
-        newPerson.setBirthday(personDTO.getBirthday());
-        newPerson.setSex(personDTO.isSex());
+        newPerson.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+        newPerson.setName(requestDTO.getName());
+        newPerson.setImage(requestDTO.getImage());
+        newPerson.setPhoneNumber(requestDTO.getPhoneNumber());
+        newPerson.setEmail(requestDTO.getEmail());
+        newPerson.setBirthday(requestDTO.getBirthday());
+        newPerson.setSex(requestDTO.isSex());
         newPerson.setRoleId(roleRepository.findByName(role));
         return newPerson;
     }
 
-    public PersonDTO validatePersonDTO(PersonDTO personDTO) {
-        if (personDTO.getPassword() == null || personDTO.getPassword().equals("") || personDTO.getPassword().length() < 5) return null;
-        if (personDTO.getName() == null || personDTO.getName().equals("")) return null;
-        if (personDTO.getPhoneNumber() == null || personDTO.getPhoneNumber().equals("")
-                || !personDTO.getPhoneNumber().matches("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) return null;
-        if (personDTO.getEmail() == null || personDTO.getEmail().equals("")
-                || !personDTO.getEmail().matches("^[_A-Za-z\\d-\\\\+]+(\\\\.[_A-Za-z\\d-]+)*@[A-Za-z\\d-]+(\\\\.[A-Za-z\\d]+)*(\\\\.[A-Za-z]{2,})$")) return null;
-        if (personDTO.getBirthday() == null || personDTO.getBirthday().after(Date.valueOf(LocalDate.now()))) return null;
-        return personDTO;
+    public void fillCoach(RegisterRequestDTO requestDTO) {
+
+    }
+
+    public Person findByEmail(String email) {
+        return null;
+    }
+
+    public RegisterRequestDTO validateRegisterRequestDTO(RegisterRequestDTO requestDTO) {
+        if (requestDTO.getPassword() == null || requestDTO.getPassword().equals("") || requestDTO.getPassword().length() < 5) return null;
+        if (requestDTO.getName() == null || requestDTO.getName().equals("")) return null;
+        if (requestDTO.getPhoneNumber() == null || requestDTO.getPhoneNumber().equals("")
+                || !requestDTO.getPhoneNumber().matches("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) return null;
+        if (requestDTO.getEmail() == null || requestDTO.getEmail().equals("")
+                || !requestDTO.getEmail().matches("^[_A-Za-z\\d-\\\\+]+(\\\\.[_A-Za-z\\d-]+)*@[A-Za-z\\d-]+(\\\\.[A-Za-z\\d]+)*(\\\\.[A-Za-z]{2,})$")) return null;
+        if (requestDTO.getBirthday() == null || requestDTO.getBirthday().after(Date.valueOf(LocalDate.now()))) return null;
+        for (SportPriceDTO dto: requestDTO.getListPrices()) {
+            if (dto.getPrice() <= 0) return null;
+        }
+        return requestDTO;
     }
 }
