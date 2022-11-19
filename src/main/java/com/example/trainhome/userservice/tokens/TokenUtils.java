@@ -16,7 +16,7 @@ import java.util.Date;
 @Component
 public class TokenUtils {
 
-    public String generate(Person person) {
+    public static String generate(Person person) {
         String in  = String.valueOf(Date.from(Instant.now())) +
                 Math.random() + person.getEmail() + person.getId() + person;
         try {
