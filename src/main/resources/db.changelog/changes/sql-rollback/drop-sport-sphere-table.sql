@@ -1,0 +1,1 @@
+drop table sport_sphere;

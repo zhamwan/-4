@@ -11,7 +11,7 @@ public class Coach {
     @Id
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
-    private Person person_id;
+    private Person personId;
 
     @Column(name = "rating", nullable = false)
     private Double rating;

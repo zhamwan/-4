@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <preConditions>
+        <dbms type="postgresql"/>
+    </preConditions>
+
+    <include file="changes/create-role-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-person-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-coach-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-transactions-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-sport-sphere-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-groups-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-training-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-sport-sphere-coach-price-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-group-person-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-eat-calendar-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-group-chat-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-list-person-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-list-message-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-session-table.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
