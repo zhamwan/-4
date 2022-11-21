@@ -1,6 +1,7 @@
 package com.example.trainhome.userservice.controllers;
 
 
+import com.example.trainhome.exceptions.NoSuchPersonException;
 import com.example.trainhome.userservice.entities.Person;
 import com.example.trainhome.userservice.repositories.RoleRepository;
 import com.example.trainhome.userservice.services.PersonService;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.trainhome.userservice.dto.PersonDTO;
+
 
 @RestController
 @RequestMapping(value = "/person")
@@ -29,20 +31,19 @@ public class PersonController {
     @GetMapping
     ResponseEntity<?> getPersonByEmail(@RequestBody String email) {
         Person person = personService.findByPersonEmail(email);
-        person.setPassword(null);
         ResponseEntity e = ResponseEntity.ok(person);
         return e;
     }
 
     @CrossOrigin
     @PostMapping("/update")
-    ResponseEntity<?> updatePerson(@RequestBody PersonDTO personDTO) {
-        Person person = personService.findByPersonEmail(personDTO.getEmail());
-        person.setBirthday(personDTO.getBirthday());
-        person.setName(personDTO.getName());
-        person.setImage(personDTO.getImage());
-        person.setPhoneNumber(personDTO.getPhoneNumber());
-        return ResponseEntity.ok(person);
+    ResponseEntity<?> updatePerson(@RequestBody PersonDTO  personDTO) {
+        try{
+             return ResponseEntity.ok(personService.update(personDTO));
+        } catch (NoSuchPersonException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @CrossOrigin
